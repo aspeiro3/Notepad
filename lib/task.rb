@@ -1,11 +1,11 @@
-require 'date' # Подключаем встроеную библиотеку ruby для преобразования стоки в класс Data
+require 'date'
 
 class Task < Post
 
   def initialize
-    super # вызываем конструктор родителя
+    super
 
-    @due_data = Time.now
+    @due_date = Time.now
   end
 
   def read_from_consol
@@ -15,14 +15,24 @@ class Task < Post
     puts "К какому числу? Укажите дату в формате ДД.ММ.ГГГГ (например - 22.03.2020):"
     input = STDIN.gets.strip
 
-    @due_data = Date.parse(input) # Метод '.parse' преобразовует строку 'inpud' в дату
+    @due_date = Date.parse(input)
   end
 
   def to_strings
-    time_string = "Создано: #{@created_at.strftime("%Y.%m.%d, %H:%M:%S")} \n\r"
+    deadline = "Крайний срок: #{@due_date.strftime('%Y.%m.%d')}"
+    time_string = "Создано: #{@created_at.strftime('%Y.%m.%d, %H:%M:%S')} \n\n"
 
-    deadline = "Крайний срок: #{@due_data}"
+    [time_string, @text, deadline]
+  end
 
-    [deadline, @text, time_string]
+  def to_db_hash
+    super.merge(text: @text, due_date: @due_date.strftime("%Y.%m.%d"))
+  end
+
+  def load_data(data_hash)
+    super
+
+    @text = data_hash['text']
+    @due_date = Date.parse(data_hash['due_date'])
   end
 end

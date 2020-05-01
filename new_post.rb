@@ -11,17 +11,19 @@ choices = Post.post_types
 
 choice = nil
 until ('1'..choices.size.to_s).to_a.include?(choice)
-  choices.each.with_index(1) do |type, index|
+  choices.values.each.with_index(1) do |type, index|
     puts "\t#{index}. #{type}"
   end
   choice = STDIN.gets.strip
 end
 
-# Вызываем статический метод класса 'Post', где в по индексу 'choice' будет выбран дочерний класс
-entry = Post.create(choice.to_i - 1)
+type = choices.keys[choice.to_i - 1]
+
+entry = Post.create(type)
 
 entry.read_from_consol
 
-entry.save
+rowid = entry.save_to_db
 
-puts 'Ура, запись сохранена!'
+puts
+puts "Ура, запись сохранена! (rowid = #{rowid})"

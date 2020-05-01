@@ -1,7 +1,7 @@
 class Link < Post
 
   def initialize
-    super # вызываем конструктор родителя
+    super
 
     @url = ''
   end
@@ -15,8 +15,19 @@ class Link < Post
   end
 
   def to_strings
-    time_string = "Создано: #{@created_at.strftime("%Y.%m.%d, %H:%M:%S")} \n\r"
+    time_string = "Создано: #{@created_at.strftime('%Y.%m.%d, %H:%M:%S')} \n\n"
 
-    [@url, @text, time_string]
+    [time_string, @url, @text]
+  end
+
+  def to_db_hash
+    super.merge(url: @url, description: @text)
+  end
+
+  def load_data(data_hash)
+    super
+
+    @url = data_hash['url']
+    @text = data_hash['description']
   end
 end
